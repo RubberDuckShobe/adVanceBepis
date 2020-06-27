@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections;
 using HarmonyLib;
 using UnityEngine;
 using BepInEx.Logging;
-using HutongGames.PlayMaker.Actions;
 using static adVanceBepis.OLDTVResources;
 
 namespace adVanceBepis
@@ -121,7 +116,7 @@ namespace adVanceBepis
         [HarmonyPatch(typeof(PauseButton), "UnPause")]
         [HarmonyPostfix]
         static void OnUnpause() {
-            //Wait because the game does that
+            //Wait because the game does that too
             StaticCoroutine.Start(UnPauseWait());
         }
 
@@ -131,6 +126,7 @@ namespace adVanceBepis
         static void PatchFPS(ref int f) {
             f = 999;
         }
+
         #endregion
     }
 }

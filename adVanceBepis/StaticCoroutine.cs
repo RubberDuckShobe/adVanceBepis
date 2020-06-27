@@ -1,5 +1,5 @@
 ﻿/*
- * yoinked from:
+ * this is code written by CykesDev, yoinked from this unity forum thread:
  * https://forum.unity.com/threads/c-coroutines-in-static-functions.134546/
  * ...please don't slap me
 */
@@ -29,12 +29,12 @@ public class StaticCoroutine : MonoBehaviour
 
         if (m_instance != null) { return m_instance; }
 
-        GameObject instanceObject = new GameObject("StaticCoroutine");
+        GameObject instanceObject = new GameObject("adVanceBepis StaticCoroutine");
         instanceObject.AddComponent<StaticCoroutine>();
         m_instance = instanceObject.GetComponent<StaticCoroutine>();
 
         if (m_instance != null) { return m_instance; }
-
+        
         Debug.LogError("Build did not generate a replacement instance. Method Failed!");
 
         return null;

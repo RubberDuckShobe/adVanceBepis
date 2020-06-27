@@ -1,8 +1,4 @@
 ﻿using BepInEx;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,15 +11,17 @@ namespace adVanceBepis
     public class adVanceBepisMain : BaseUnityPlugin
     {
         void Awake() {
+            SceneManager.activeSceneChanged += OnSceneChange;
+
             Logger.LogInfo("adVanceBepis loaded!");
 
             var harmonyPatchObject = new GameObject("adVanceBepis Patcher Object");
             DontDestroyOnLoad(harmonyPatchObject);
             harmonyPatchObject.AddComponent<HarmonyPatches>();
-
-            SceneManager.activeSceneChanged += OnSceneChange;
         }
 
+        //Runs on every scene change.
+        //who would've thought
         void OnSceneChange(Scene oldScene, Scene newScene) {
             Logger.LogInfo($"Scene switched from {oldScene.name} to {newScene.name}");
         }
