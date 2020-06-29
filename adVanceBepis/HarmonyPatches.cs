@@ -14,7 +14,7 @@ namespace adVanceBepis
         void Awake() {
             //Register BepInEx Logger source
             BepInEx.Logging.Logger.Sources.Add(patchLogSource);
-            patchLogSource.LogInfo("HarmonyPatches Awake ran");
+            patchLogSource.LogInfo("HarmonyPatches Awake() ran");
 
             //Initialize Harmony
             harmonyInstance = Harmony.CreateAndPatchAll(typeof(HarmonyPatches));
@@ -22,6 +22,7 @@ namespace adVanceBepis
 
         void OnDestroy() {
             //Unpatch everything when the patches object is destroyed
+            patchLogSource.LogInfo("Reverting all patches of Harmony instance with ID " + harmonyInstance.Id);
             harmonyInstance.UnpatchAll(harmonyInstance.Id);
             harmonyInstance = null;
         }
@@ -40,6 +41,7 @@ namespace adVanceBepis
             currentState = GameState.Menu;
             unpausedState = currentState;
             patchLogSource.LogInfo("FailWait ended, Player is now in menu");
+            adVanceRichPresence.SetMenuPresence();
             yield break;
         }
 
@@ -48,12 +50,12 @@ namespace adVanceBepis
             yield return new WaitForSeconds(3f);
             currentState = unpausedState;
             patchLogSource.LogInfo("Game unpaused");
+            adVanceRichPresence.SetGameplayPresence(currentState, unpausedState, currentContinent);
             yield break;
         }
 
         /*
          * Harmony patches for various game events
-         * (for example connecting and failing) 
         */
 
         #region Harmony Patches
@@ -63,6 +65,7 @@ namespace adVanceBepis
         static void OnNormalModeFail() {
             patchLogSource.LogInfo("Player failed");
             currentState = GameState.Failing;
+            unpausedState = currentState;
         }
 
         [HarmonyPatch(typeof(GamePlay), "WaitToConnect")]
@@ -70,6 +73,31 @@ namespace adVanceBepis
         static void OnNormalModeConnect(string con) {
             patchLogSource.LogInfo("Connecting to " + con);
             currentState = GameState.NormalMode;
+            unpausedState = currentState;
+            switch (con) {
+                case "Oceania":
+                    currentContinent = Continent.Oceania;
+                    break;
+                case "Asia":
+                    currentContinent = Continent.Asia;
+                    break;
+                case "Europe":
+                    currentContinent = Continent.Europe;
+                    break;
+                case "The Americas":
+                    currentContinent = Continent.America;
+                    break;
+                case "Africa":
+                    currentContinent = Continent.Africa;
+                    break;
+                case "Antarctica":
+                    currentContinent = Continent.Antarctica;
+                    break;
+                case "Abandoned":
+                    currentContinent = Continent.AbandonedStations;
+                    break;
+            }
+            adVanceRichPresence.SetGameplayPresence(currentState, unpausedState, currentContinent);
         }
 
         [HarmonyPatch(typeof(GamePlay), "FailWait")]
@@ -95,6 +123,8 @@ namespace adVanceBepis
             patchLogSource.LogInfo("Infinite mode connecting");
             currentState = GameState.InfiniteMode;
             unpausedState = currentState;
+            currentContinent = Continent.Saturn;
+            adVanceRichPresence.SetGameplayPresence(currentState, unpausedState, currentContinent);
         }
 
         [HarmonyPatch(typeof(InfiniteModeGamePlay), "FailWait")]
@@ -111,6 +141,7 @@ namespace adVanceBepis
         static void OnPause() {
             currentState = GameState.Paused;
             patchLogSource.LogInfo("Game paused");
+            adVanceRichPresence.SetGameplayPresence(currentState, unpausedState, currentContinent);
         }
 
         [HarmonyPatch(typeof(PauseButton), "UnPause")]
@@ -125,6 +156,12 @@ namespace adVanceBepis
         [HarmonyPrefix]
         static void PatchFPS(ref int f) {
             f = 999;
+        }
+        
+        [HarmonyPatch(typeof(ColorRandomizer), "randomColour")]
+        [HarmonyPostfix]
+        static void OnColorChange() {
+            
         }
 
         #endregion

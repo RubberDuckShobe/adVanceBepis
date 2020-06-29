@@ -63,6 +63,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="adVanceChroma.cs" />
+    <Compile Include="adVanceRichPresence.cs" />
+    <Compile Include="DiscordRPCImports.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="OLDTVResources.cs" />
     <Compile Include="PluginMain.cs" />
