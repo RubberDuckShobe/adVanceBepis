@@ -1,4 +1,8 @@
 ﻿using UnityEngine;
+using Corale.Colore.Core;
+using Color = UnityEngine.Color;
+using ColoreColor = Corale.Colore.Core.Color;
+using System.Xml.Schema;
 
 namespace adVanceBepis
 {
@@ -38,13 +42,13 @@ namespace adVanceBepis
         public static GameState unpausedState;
 
         //Game colors, exactly like they are in the game.
-        public Color Red = new Color(1f, 0f, 0f);
-        public Color Blue = new Color(0f, 0f, 1f);
-        public Color Green = new Color(0f, 1f, 0f);
-        public Color Purple = new Color(0.35f, 0f, 0.8f);
-        public Color Yellow = new Color(0.5f, 0.5f, 0f);
-        public Color Cyan = new Color(0f, 0.6f, 0.7f);
-        public Color Pink = new Color(1f, 0.2f, 1f);
-        public Color Orange = new Color(1f, 0.4f, 0.2f);
+        public static Color32 red = new Color(1f, 0f, 0f);
+        public static Color32 blue = new Color(0f, 0f, 1f);
+        public static Color32 green = new Color(0f, 1f, 0f);
+        public static Color32 purple = new Color(0.35f, 0f, 0.8f);
+        public static Color32 yellow = new Color(0.5f, 0.5f, 0f);
+        public static Color32 cyan = new Color(0f, 0.6f, 0.7f);
+        public static Color32 pink = new Color(1f, 0.2f, 1f);
+        public static Color32 orange = new Color(1f, 0.4f, 0.2f);
     }
 }
