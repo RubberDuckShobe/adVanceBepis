@@ -38,6 +38,10 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>D:\SteamBibliothek\steamapps\common\V\V_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\SteamBibliothek\steamapps\common\V\V_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
     <Reference Include="BepInEx">
       <HintPath>D:\SteamBibliothek\steamapps\common\V\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>

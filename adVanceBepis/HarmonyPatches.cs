@@ -3,6 +3,8 @@ using HarmonyLib;
 using UnityEngine;
 using BepInEx.Logging;
 using static adVanceBepis.OLDTVResources;
+using Steamworks;
+using GameJolt.API.Objects;
 
 namespace adVanceBepis
 {
@@ -11,11 +13,11 @@ namespace adVanceBepis
         public static ManualLogSource patchLogSource = new ManualLogSource("adVanceBepis Patches");
         static Harmony harmonyInstance;
 
-        void Awake() {
+        void Start() {
             //Register BepInEx Logger source
             BepInEx.Logging.Logger.Sources.Add(patchLogSource);
-            patchLogSource.LogInfo("HarmonyPatches Awake() ran");
-
+            patchLogSource.LogInfo("HarmonyPatches Start() ran");
+            
             //Initialize Harmony
             harmonyInstance = Harmony.CreateAndPatchAll(typeof(HarmonyPatches));
         }
@@ -54,8 +56,18 @@ namespace adVanceBepis
             yield break;
         }
 
+        //Coroutine for waiting when the game is connecting to a new country/continent
+        public static IEnumerator NormalModeConnectWait() {
+            yield return new WaitForSeconds(3f);
+            currentState = GameState.NormalMode;
+            unpausedState = currentState;
+            patchLogSource.LogInfo("Normal mode connection done");
+            adVanceRichPresence.SetGameplayPresence(currentState, unpausedState, currentContinent);
+            yield break;
+        }
+
         /*
-         * Harmony patches for various game events
+         * Harmony patches for various game methods
         */
 
         #region Harmony Patches
@@ -72,7 +84,7 @@ namespace adVanceBepis
         [HarmonyPostfix]
         static void OnNormalModeConnect(string con) {
             patchLogSource.LogInfo("Connecting to " + con);
-            currentState = GameState.NormalMode;
+            currentState = GameState.Connecting;
             unpausedState = currentState;
             switch (con) {
                 case "Oceania":
@@ -97,7 +109,8 @@ namespace adVanceBepis
                     currentContinent = Continent.AbandonedStations;
                     break;
             }
-            adVanceRichPresence.SetGameplayPresence(currentState, unpausedState, currentContinent);
+            adVanceRichPresence.SetConnectingPresence(currentContinent);
+            StaticCoroutine.Start(NormalModeConnectWait());
         }
 
         [HarmonyPatch(typeof(GamePlay), "FailWait")]
@@ -156,12 +169,68 @@ namespace adVanceBepis
         [HarmonyPrefix]
         static void PatchFPS(ref int f) {
             f = 999;
+            patchLogSource.LogInfo("Patched FPS cap at SetFPSCap");
         }
-        
+
+        [HarmonyPatch(typeof(MeshRenderedColorFade), "Start")]
+        [HarmonyPrefix]
+        //the amount of arguments scare me but they're neccessary
+        static bool PatchMeshFade(MeshRenderedColorFade __instance, ref float ___currentFPS, ref bool ___DoneFading,
+                              ref Color ___c, ref Color ___ColorStart, ref float ___diff_r, ref float ___diff_b,
+                              ref float ___diff_g, ref float ___diff_a, ref Color ___ColorEnd, ref float ___FadeTime) {
+            //Fix the fading by making the fading function think that the game is running at 60FPS.
+            //Thanks to OLDTV's spaghetti code, this is neccessary because the fading is tied to the frame rate.
+            ___currentFPS = 60f;
+            ___DoneFading = false;
+            ___c = __instance.gameObject.GetComponent<MeshRenderer>().material.color;
+            ___c = ___ColorStart;
+            __instance.gameObject.GetComponent<MeshRenderer>().material.color = ___c;
+            ___diff_r = (___ColorEnd.r - ___ColorStart.r) / ___FadeTime / ___currentFPS;
+            ___diff_b = (___ColorEnd.b - ___ColorStart.b) / ___FadeTime / ___currentFPS;
+            ___diff_g = (___ColorEnd.g - ___ColorStart.g) / ___FadeTime / ___currentFPS;
+            ___diff_a = (___ColorEnd.a - ___ColorStart.a) / ___FadeTime / ___currentFPS;
+            //Prevent original method from running after the prefix
+            return false;
+        }
+
+        [HarmonyPatch(typeof(TextColourFade), "Start")]
+        [HarmonyPrefix]
+        static bool PatchTextColourFade(TextColourFade __instance,
+                                        ref float ___currentFPS,
+                                        ref bool ___DoneFading,
+                                        ref Color ___c,
+                                        ref Color ___ColorStart,
+                                        ref float ___Delay) {
+            ___currentFPS = 60f;
+            ___DoneFading = false;
+            if (___Delay == 0f) {
+                ___c = __instance.gameObject.GetComponent<TextMesh>().color;
+                ___c = ___ColorStart;
+                __instance.gameObject.GetComponent<TextMesh>().color = ___c;
+            }
+            //Prevent original method from running after the prefix
+            return false;
+        }
+
+        [HarmonyPatch(typeof(TextFade), "Start")]
+        [HarmonyPrefix]
+        static bool PatchTextFade(TextFade __instance,
+                                  ref float ___currentFPS,
+                                  ref float ___OpacityStart,
+                                  ref Color ___c) {
+            ___currentFPS = 60f;
+            ___c = __instance.gameObject.GetComponent<TextMesh>().color;
+            ___c.a = ___OpacityStart;
+            __instance.gameObject.GetComponent<TextMesh>().color = ___c;
+            //Prevent original method from running after the prefix
+            return false;
+        }
+
         [HarmonyPatch(typeof(ColorRandomizer), "randomColour")]
         [HarmonyPostfix]
-        static void OnColorChange() {
-            
+        static void OnColorChange(ref string ___colorString) {
+            currentColorString = ___colorString;
+            patchLogSource.LogDebug("New color is " + ___colorString);
         }
 
         #endregion

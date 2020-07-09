@@ -79,6 +79,8 @@ namespace adVanceBepis
 
         public static Continent currentContinent;
 
+        public static string currentColorString;
+
         //Game colors, exactly like they are in the game.
         public static Color32 red = new Color(1f, 0f, 0f);
         public static Color32 blue = new Color(0f, 0f, 1f);

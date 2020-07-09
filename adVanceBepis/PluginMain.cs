@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,7 +11,20 @@ namespace adVanceBepis
     [BepInProcess("V.exe")]
     public class adVanceBepisMain : BaseUnityPlugin
     {
-        void Awake() {
+        public static ConfigEntry<bool> configEnableRichPresence;
+        public static ConfigEntry<bool> configEnableRazerChroma;
+
+        void Start() {
+            configEnableRichPresence = Config.Bind("adVanceBepis Settings",   // The section under which the option is shown
+                                     "EnableRichPresence",  // The key of the configuration option in the configuration file
+                                     true, // The default value
+                                     "Enable/disable Rich Presence."); // Description of the option to show in the config file
+
+            configEnableRazerChroma = Config.Bind("adVanceBepis Settings",
+                                     "EnableRazerChroma",
+                                     true,
+                                     "Enable/disable Razer Chroma integration.");
+
             SceneManager.activeSceneChanged += OnSceneChange;
 
             Logger.LogInfo("adVanceBepis loaded!");
@@ -21,10 +35,19 @@ namespace adVanceBepis
             DontDestroyOnLoad(harmonyPatchObject);
             harmonyPatchObject.AddComponent<HarmonyPatches>();
 
-            //Does the same like above but with the Discord Rich Presence stuff
-            var richPresenceObject = new GameObject("adVanceBepis DiscordRPC Manager");
-            DontDestroyOnLoad(richPresenceObject);
-            richPresenceObject.AddComponent<adVanceRichPresence>();
+            if (configEnableRichPresence.Value) {
+                //Does the same like above but with the Discord Rich Presence stuff
+                var richPresenceObject = new GameObject("adVanceBepis DiscordRPC Manager");
+                DontDestroyOnLoad(richPresenceObject);
+                richPresenceObject.AddComponent<adVanceRichPresence>();
+            }
+
+            if (configEnableRazerChroma.Value) {
+                //Does the same like above but with the Razer Chroma stuff
+                var razerChromaObject = new GameObject("adVanceBepis Chroma Manager");
+                DontDestroyOnLoad(razerChromaObject);
+                razerChromaObject.AddComponent<adVanceChroma>(); 
+            }
         }
 
         //Runs on every scene change.
