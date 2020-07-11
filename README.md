@@ -15,4 +15,5 @@ Soon™
 ![RPC Image 1](https://github.com/RubberDuckShobe/adVanceBepis/blob/master/images/adVanceRPC_1.png?raw=true) ![RPC Image 2](https://github.com/RubberDuckShobe/adVanceBepis/blob/master/images/adVanceRPC_2.png?raw=true)
 
 - Config for disabling/configuring features (config file located at BepInEx\config in game's folder)
+- Custom menu text! (configurable with the config file)
 - (Soon™) Steam Rich Presence
