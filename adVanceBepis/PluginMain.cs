@@ -13,6 +13,8 @@ namespace adVanceBepis
     {
         public static ConfigEntry<bool> configEnableRichPresence;
         public static ConfigEntry<bool> configEnableRazerChroma;
+        public static ConfigEntry<bool> configEnableCustomMenuText;
+        public static ConfigEntry<string> configCustomMenuText;
 
         void Start() {
             configEnableRichPresence = Config.Bind("adVanceBepis Settings",   // The section under which the option is shown
@@ -24,6 +26,16 @@ namespace adVanceBepis
                                      "EnableRazerChroma",
                                      true,
                                      "Enable/disable Razer Chroma integration.");
+
+            configEnableCustomMenuText = Config.Bind("adVanceBepis Settings",
+                                     "EnableCustomMenuText",
+                                     false,
+                                     "Enable/disable custom menu text.");
+
+            configCustomMenuText = Config.Bind("adVanceBepis Settings",
+                                     "CustomMenuText",
+                                     "adVance",
+                                     "Custom menu text to use.");
 
             SceneManager.activeSceneChanged += OnSceneChange;
 

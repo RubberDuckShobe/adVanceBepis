@@ -70,7 +70,7 @@ namespace adVanceBepis
          * Harmony patches for various game methods
         */
 
-        #region Harmony Patches
+        #region Normal Mode patches
         //Normal mode
         [HarmonyPatch(typeof(GamePlay), "Fail")]
         [HarmonyPostfix]
@@ -120,7 +120,9 @@ namespace adVanceBepis
             //This is necessary because the postfix on this just runs instantly for whatever reason
             StaticCoroutine.Start(AfterFailWait());
         }
+        #endregion
 
+        #region Infinite Mode patches
         //Infinite mode
         [HarmonyPatch(typeof(InfiniteModeGamePlay), "Fail")]
         [HarmonyPostfix]
@@ -147,7 +149,9 @@ namespace adVanceBepis
             //This is necessary because the postfix on this just runs instantly for whatever reason
             StaticCoroutine.Start(AfterFailWait());
         }
+        #endregion
 
+        #region Pause and unpause patches 
         //Pause and unpause
         [HarmonyPatch(typeof(PauseButton), "DoPause")]
         [HarmonyPostfix]
@@ -163,7 +167,9 @@ namespace adVanceBepis
             //Wait because the game does that too
             StaticCoroutine.Start(UnPauseWait());
         }
+        #endregion
 
+        #region Misc. patches
         //Other harmony patches (Higher FPS cap for example)
         [HarmonyPatch(typeof(Option_FPSCap), "SetFPSCap")]
         [HarmonyPrefix]
@@ -172,6 +178,7 @@ namespace adVanceBepis
             patchLogSource.LogInfo("Patched FPS cap at SetFPSCap");
         }
 
+        #region Fade patches
         [HarmonyPatch(typeof(MeshRenderedColorFade), "Start")]
         [HarmonyPrefix]
         //the amount of arguments scare me but they're neccessary
@@ -225,6 +232,7 @@ namespace adVanceBepis
             //Prevent original method from running after the prefix
             return false;
         }
+        #endregion
 
         [HarmonyPatch(typeof(ColorRandomizer), "randomColour")]
         [HarmonyPostfix]
@@ -233,6 +241,11 @@ namespace adVanceBepis
             patchLogSource.LogDebug("New color is " + ___colorString);
         }
 
+        [HarmonyPatch(typeof(StartGameButton), "FixedUpdate")]
+        [HarmonyPostfix]
+        static void PatchMenuText(StartGameButton __instance) {
+            if (adVanceBepisMain.configEnableCustomMenuText.Value) __instance.gameObject.GetComponent<TextMesh>().text = adVanceBepisMain.configCustomMenuText.Value;
+        }
         #endregion
     }
 }
