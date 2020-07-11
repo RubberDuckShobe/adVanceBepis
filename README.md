@@ -8,7 +8,7 @@ Soon™
 ## Features
 - Actually works properly, unlike adVance
 - Doesn't use crusty old IPA (ew)
-- FPS cap was removed to allow 144hz+ monitors to be used to their full extent (technically it's set to 999 but there are no 999hz monitors anyway)
+- FPS cap was removed to allow monitors with over 120hz to be used to their full extent (technically it's set to 999 but there are no monitors that crazy fast anyway)
 - Razer Chroma integration to allow for the game's color to be shown on the keyboard. (If you have smart lighting in your room and are willing to try adVance's Chroma features with it, feel free to send me a video of it in action on Discord: Rubber Duck Shobe#8332)
 - Discord Rich Presence (shows state of game in main menu, when paused and when in-game)
 
