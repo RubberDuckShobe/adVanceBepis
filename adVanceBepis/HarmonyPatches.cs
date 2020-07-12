@@ -219,6 +219,12 @@ namespace adVanceBepis
             return false;
         }
 
+        [HarmonyPatch(typeof(TextColourFade), "FixedUpdate")]
+        [HarmonyPrefix]
+        static void PatchFadeFixedUpdate(ref float ___currentFPS) {
+            ___currentFPS = 60f;
+        }
+
         [HarmonyPatch(typeof(TextFade), "Start")]
         [HarmonyPrefix]
         static bool PatchTextFade(TextFade __instance,
@@ -231,6 +237,14 @@ namespace adVanceBepis
             __instance.gameObject.GetComponent<TextMesh>().color = ___c;
             //Prevent original method from running after the prefix
             return false;
+        }
+
+        [HarmonyPatch(typeof(TextFade), "FixedUpdate")]
+        [HarmonyPatch(typeof(TextColourFade), "FixedUpdate")]
+        [HarmonyPatch(typeof(MeshRenderedColorFade), "FixedUpdate")]
+        [HarmonyPrefix]
+        static void PatchTextFadeFixedUpdate(ref float ___currentFPS) {
+            ___currentFPS = 60f;
         }
         #endregion
 
