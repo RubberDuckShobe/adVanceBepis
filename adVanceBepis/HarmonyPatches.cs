@@ -219,12 +219,6 @@ namespace adVanceBepis
             return false;
         }
 
-        [HarmonyPatch(typeof(TextColourFade), "FixedUpdate")]
-        [HarmonyPrefix]
-        static void PatchFadeFixedUpdate(ref float ___currentFPS) {
-            ___currentFPS = 60f;
-        }
-
         [HarmonyPatch(typeof(TextFade), "Start")]
         [HarmonyPrefix]
         static bool PatchTextFade(TextFade __instance,
