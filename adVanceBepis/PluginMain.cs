@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 namespace adVanceBepis
 {
-    [BepInPlugin("org.rubberduckshobe.advancebepis", "adVanceBepis", "0.1.0")]
+    [BepInPlugin("org.rubberduckshobe.advancebepis", "adVanceBepis", "0.2.0")]
     //ensure the game is OLDTV and not... whatever
     //though it'll still work with plasmatv because they're the same
     [BepInProcess("V.exe")]
@@ -15,8 +15,11 @@ namespace adVanceBepis
         public static ConfigEntry<bool> configEnableRazerChroma;
         public static ConfigEntry<bool> configEnableCustomMenuText;
         public static ConfigEntry<string> configCustomMenuText;
+        public static ConfigEntry<bool> configEnableCustomMenuTextSize;
+        public static ConfigEntry<int> configCustomMenuTextSize;
 
         void Start() {
+            //config things~
             configEnableRichPresence = Config.Bind("adVanceBepis Settings",   // The section under which the option is shown
                                      "EnableRichPresence",  // The key of the configuration option in the configuration file
                                      true, // The default value
@@ -27,15 +30,25 @@ namespace adVanceBepis
                                      true,
                                      "Enable/disable Razer Chroma integration.");
 
-            configEnableCustomMenuText = Config.Bind("adVanceBepis Settings",
+            configEnableCustomMenuText = Config.Bind("Customization",
                                      "EnableCustomMenuText",
                                      false,
                                      "Enable/disable custom menu text.");
 
-            configCustomMenuText = Config.Bind("adVanceBepis Settings",
+            configCustomMenuText = Config.Bind("Customization",
                                      "CustomMenuText",
                                      "adVance",
                                      "Custom menu text to use.");
+
+            configEnableCustomMenuTextSize = Config.Bind("Customization",
+                                     "EnableCustomMenuTextSize",
+                                     false,
+                                     "Enable/disable custom menu text size.");
+
+            configCustomMenuTextSize = Config.Bind("Customization",
+                                     "CustomMenuTextSize",
+                                     200,
+                                     "Custom menu text size to use.");
 
             SceneManager.activeSceneChanged += OnSceneChange;
 

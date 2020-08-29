@@ -249,10 +249,15 @@ namespace adVanceBepis
             patchLogSource.LogDebug("New color is " + ___colorString);
         }
 
+        //Custom Text patch
         [HarmonyPatch(typeof(StartGameButton), "FixedUpdate")]
         [HarmonyPostfix]
         static void PatchMenuText(StartGameButton __instance) {
             if (adVanceBepisMain.configEnableCustomMenuText.Value) __instance.gameObject.GetComponent<TextMesh>().text = adVanceBepisMain.configCustomMenuText.Value;
+            if (adVanceBepisMain.configEnableCustomMenuTextSize.Value) __instance.gameObject.GetComponent<TextMesh>().fontSize = adVanceBepisMain.configCustomMenuTextSize.Value;
+            //Because it still persists when going to space
+            if (FindObjectOfType<StartGameButton>().InfiniteMode) __instance.gameObject.GetComponent<TextMesh>().text = "∞";
+            if (FindObjectOfType<StartGameButton>().InfiniteMode) __instance.gameObject.GetComponent<TextMesh>().fontSize = 200;
         }
         #endregion
     }
