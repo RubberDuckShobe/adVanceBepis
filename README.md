@@ -3,7 +3,8 @@
 [adVance](https://github.com/RubberDuckShobe/adVance) fixed, enhanced and ported to [BepInEx](https://github.com/BepInEx/BepInEx).
 
 ## Installation
-Soon™
+1. Install the x86 version of [BepInEx](https://bepinex.github.io/bepinex_docs/master/articles/user_guide/installation/index.html?tabs=tabid-win)
+2. (Optional but recommended) Change the entrypoint type (**not** the function!) in [BepInEx's config file] to MonoBehaviour
 
 ## Features
 - Actually works properly, unlike adVance
@@ -16,4 +17,4 @@ Soon™
 
 - Config for disabling/configuring features (config file located at BepInEx\config in game's folder)
 - Custom menu text! (configurable with the config file)
-- (Soon™) Steam Rich Presence
+- ~~(Soon™)~~ (Eventually™) Steam Rich Presence
