@@ -13,12 +13,17 @@ namespace adVanceBepis
     {
         public static ConfigEntry<bool> configEnableRichPresence;
         public static ConfigEntry<bool> configEnableRazerChroma;
+        public static ConfigEntry<bool> configEnableGUI;
         public static ConfigEntry<bool> configEnableCustomMenuText;
         public static ConfigEntry<string> configCustomMenuText;
         public static ConfigEntry<bool> configEnableCustomMenuTextSize;
         public static ConfigEntry<int> configCustomMenuTextSize;
 
         void Start() {
+            SceneManager.activeSceneChanged += OnSceneChange;
+            OLDTVResources.currentState = OLDTVResources.GameState.Loading;
+            OLDTVResources.unpausedState = OLDTVResources.GameState.Loading;
+
             //config things~
             configEnableRichPresence = Config.Bind("adVanceBepis Settings",   // The section under which the option is shown
                                      "EnableRichPresence",  // The key of the configuration option in the configuration file
@@ -29,6 +34,11 @@ namespace adVanceBepis
                                      "EnableRazerChroma",
                                      true,
                                      "Enable/disable Razer Chroma integration.");
+
+            configEnableGUI = Config.Bind("adVanceBepis Settings",
+                                     "EnableGUI",
+                                     true,
+                                     "Enable/disable adVanceBepis GUI. (When enabled, you can toggle the GUI with O)");
 
             configEnableCustomMenuText = Config.Bind("Customization",
                                      "EnableCustomMenuText",
@@ -49,8 +59,6 @@ namespace adVanceBepis
                                      "CustomMenuTextSize",
                                      200,
                                      "Custom menu text size to use.");
-
-            SceneManager.activeSceneChanged += OnSceneChange;
 
             Logger.LogInfo("adVanceBepis loaded!");
 
@@ -73,12 +81,24 @@ namespace adVanceBepis
                 DontDestroyOnLoad(razerChromaObject);
                 razerChromaObject.AddComponent<adVanceChroma>(); 
             }
+
+            if (configEnableGUI.Value) {
+                //Does the same like above but with the GUI stuff
+                var guiObject = new GameObject("adVanceBepis GUI Manager");
+                DontDestroyOnLoad(guiObject);
+                guiObject.AddComponent<adVanceGUI>();
+            }
         }
 
         //Runs on every scene change.
         //who would've thought
         void OnSceneChange(Scene oldScene, Scene newScene) {
-            Logger.LogInfo($"Scene switched from {oldScene.name} to {newScene.name}");
+            Logger.LogInfo($"Scene changed to {newScene.name}, was {oldScene.name}");
+            //When the main game starts, change state to Menu
+            if (newScene.name == "Main (PC)") {
+                OLDTVResources.currentState = OLDTVResources.GameState.Menu;
+                OLDTVResources.unpausedState = OLDTVResources.GameState.Menu;
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿/*
- * from https://github.com/lukasong/lsaberrp/blob/master/LukaSaberRP/DiscordRpc.cs
+ * "borrowed" from https://github.com/lukasong/lsaberrp/blob/master/LukaSaberRP/DiscordRpc.cs
 */
 
 using System;

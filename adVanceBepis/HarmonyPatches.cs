@@ -5,6 +5,7 @@ using BepInEx.Logging;
 using static adVanceBepis.OLDTVResources;
 using Steamworks;
 using GameJolt.API.Objects;
+using System;
 
 namespace adVanceBepis
 {
@@ -63,6 +64,26 @@ namespace adVanceBepis
             unpausedState = currentState;
             patchLogSource.LogInfo("Normal mode connection done");
             adVanceRichPresence.SetGameplayPresence(currentState, unpausedState, currentContinent);
+            yield break;
+        }
+
+        //Same thing as above but with infinite mode
+        public static IEnumerator InfiniteModeConnectWait() {
+            yield return new WaitForSeconds(0.35f);
+            patchLogSource.LogInfo("First Infinite mode connect wait done");
+            //Select random continent from base game to display on the rich presence, similar to how the game is messing with the continent text on the connect screen
+            //adVanceRichPresence.SetGameplayPresence(currentState, unpausedState, (Continent)UnityEngine.Random.Range(0, 5));
+            yield return new WaitForSeconds(0.45f);
+            patchLogSource.LogInfo("Second Infinite mode connect wait done");
+            //adVanceRichPresence.SetGameplayPresence(currentState, unpausedState, Continent.Europe);
+            yield return new WaitForSeconds(0.2f);
+            patchLogSource.LogInfo("Third Infinite mode connect wait done");
+            //adVanceRichPresence.SetGameplayPresence(currentState, unpausedState, Continent.Saturn);
+            yield return new WaitForSeconds(1f);
+            currentState = GameState.InfiniteMode;
+            unpausedState = currentState;
+            adVanceRichPresence.SetGameplayPresence(currentState, unpausedState, currentContinent);
+            patchLogSource.LogInfo("Infinite mode connection done");
             yield break;
         }
 
@@ -136,10 +157,11 @@ namespace adVanceBepis
         [HarmonyPostfix]
         static void OnInfiniteModeConnect(string continent) {
             patchLogSource.LogInfo("Infinite mode connecting");
-            currentState = GameState.InfiniteMode;
+            currentState = GameState.Connecting;
             unpausedState = currentState;
             currentContinent = Continent.Saturn;
-            adVanceRichPresence.SetGameplayPresence(currentState, unpausedState, currentContinent);
+            adVanceRichPresence.SetGameplayPresence(currentState, unpausedState, Continent.Oceania);
+            StaticCoroutine.Start(InfiniteModeConnectWait());
         }
 
         [HarmonyPatch(typeof(InfiniteModeGamePlay), "FailWait")]
@@ -255,7 +277,7 @@ namespace adVanceBepis
         static void PatchMenuText(StartGameButton __instance) {
             if (adVanceBepisMain.configEnableCustomMenuText.Value) __instance.gameObject.GetComponent<TextMesh>().text = adVanceBepisMain.configCustomMenuText.Value;
             if (adVanceBepisMain.configEnableCustomMenuTextSize.Value) __instance.gameObject.GetComponent<TextMesh>().fontSize = adVanceBepisMain.configCustomMenuTextSize.Value;
-            //Because it still persists when going to space
+            //Because the custom text still persists when going to space
             if (FindObjectOfType<StartGameButton>().InfiniteMode) __instance.gameObject.GetComponent<TextMesh>().text = "∞";
             if (FindObjectOfType<StartGameButton>().InfiniteMode) __instance.gameObject.GetComponent<TextMesh>().fontSize = 200;
         }

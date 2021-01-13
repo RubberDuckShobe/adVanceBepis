@@ -39,7 +39,6 @@ namespace adVanceBepis
             Saturn
         }
 
-//Disable warning CS0162 (unreachable code) on this function
 #pragma warning disable CS0162
         public static string ContinentToString(Continent continent) {
             switch (continent) {

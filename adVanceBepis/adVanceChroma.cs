@@ -1,6 +1,7 @@
 ﻿using Corale.Colore.Core;
 using UnityEngine;
 //Using Corale 5.2.0 because 6.0.0 doesn't work on this .NET framework version or something, idk
+//OLDTV is running on an old ass Unity version.
 using CoraleColor = Corale.Colore.Core.Color;
 using static adVanceBepis.OLDTVResources;
 
@@ -24,7 +25,7 @@ namespace adVanceBepis
         }
 
         void Update() {
-            if (currentState == GameState.Failing) {
+            if (currentState == GameState.Failing || currentState == GameState.Paused) {
                 ChromaSetAll(CoraleColor.Black);
             }
             if (currentState == GameState.Menu || currentState == GameState.Connecting) {
