@@ -4,7 +4,10 @@
 
 ## Installation
 1. Install the x86 version of [BepInEx](https://bepinex.github.io/bepinex_docs/master/articles/user_guide/installation/index.html?tabs=tabid-win)
-2. (Optional but recommended) Change the entrypoint type (**not** the function!) in [BepInEx's config file] to MonoBehaviour
+2. (Optional but recommended) Change the entrypoint type (**not** the function!) in [BepInEx's config file](https://bepinex.github.io/bepinex_docs/master/articles/user_guide/configuration.html) to MonoBehaviour
+3. [Download the latest release of adVanceBepis](https://github.com/RubberDuckShobe/adVanceBepis/releases/latest)
+4. Copy the .dll files from the release's .zip to BepInEx' plugin folder.
+5. Start the game and play!
 
 ## Features
 - Actually works properly, unlike adVance
